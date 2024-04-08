@@ -26,7 +26,7 @@ where
 }
 
 async fn hello(_: Request<hyper::body::Incoming>) -> Result<Response<Full<Bytes>>, Infallible> {
-    Ok(Response::new(Full::new(Bytes::from("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))))
+    Ok(Response::new(Full::new(Bytes::from(vec![0; 256]))))
 }
 
 async fn client(http2: bool) {
@@ -68,7 +68,7 @@ async fn client(http2: bool) {
         while set.join_next().await.is_some() {}
 
         println!(
-            "avg lat: {}",
+            "avg lat: {}ms",
             (res.lock().await.iter().sum::<f64>() / (m as f64)) * 1000.0
         );
     });
@@ -76,7 +76,7 @@ async fn client(http2: bool) {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let http2 = false;
+    let http2 = true;
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
 
     // We create a TcpListener and bind it to 127.0.0.1:3000
